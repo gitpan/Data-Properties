@@ -51,7 +51,7 @@ them.
 
 package Data::Properties;
 
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 use strict;
 use POSIX ();
@@ -283,8 +283,7 @@ Then every entry in the property list is written out, one per
 line. For each entry the key string is written, then an ASCII C<=>,
 then the associated value.
 
-After the entries have been written, the output handle is is
-flushed. The output handle remains open after this method returns.
+The output handle remains open after this method returns.
 
 Dies if an error occurs when writing to the input handle.
 
@@ -294,14 +293,14 @@ sub store {
     my ($self, $out, $header) = @_;
     return undef unless $out;
 
+    local $| = 1;
+
     print $out "# $header\n",  if $header;
     print $out "# ", POSIX::ctime(time), "\n";
 
     for my $k (sort keys %{$self->{_props}}) {
         print $out sprintf("%s=%s\n", $k, $self->{_props}->{$k});
     }
-
-    $out->flush();
 
     return 1;
 }
